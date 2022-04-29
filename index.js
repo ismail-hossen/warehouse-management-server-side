@@ -1,8 +1,9 @@
 const express = require("express");
 const app = express();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId} = require('mongodb');
 const cors = require("cors");
 require("dotenv").config();
+
 const port = process.env.PORT || 8080;
 
 // middlewer
@@ -24,12 +25,20 @@ async function run() {
       res.send(result);
     });
 
+    // get one item by id 
+    app.get("/inventory/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await inventoryCollection.findOne(query);
+      res.send(result);
+    });
+
     console.log("connected to db");
   } finally {
   }
 }
 
-run().catch(console.log('error found'));
+run().catch(console.dir());
 
 
 app.get("/", (req, res) => {
