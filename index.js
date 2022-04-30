@@ -6,7 +6,7 @@ require("dotenv").config();
 
 const port = process.env.PORT || 8080;
 
-// middlewer
+// middleware
 app.use(cors());
 app.use(express.json());
 
@@ -47,7 +47,20 @@ async function run() {
       const found = findData.quantity - 1;
 
       const result = await inventoryCollection.updateOne(query, {
-        $set: { ...req.body, quantity: found },
+        $set: { quantity: found },
+      });
+      res.send(result);
+    });
+
+    // get one item for update quantity
+    app.put("/add-quantity/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const quantity = req.body.quantity;
+      const findData = await inventoryCollection.findOne(query);
+      const found = findData.quantity + parseInt(quantity);
+      const result = await inventoryCollection.updateOne(query, {
+        $set: { quantity: found },
       });
       res.send(result);
     });
@@ -66,4 +79,3 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`listen example port ${port}`);
 });
-
