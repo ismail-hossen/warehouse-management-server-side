@@ -27,7 +27,6 @@ async function run() {
     // add new item
     app.post("/add-inventory", async (req, res) => {
       const body = req.body;
-      console.log(body);
       const result = await inventoryCollection.insertOne(body);
       res.send(result);
     });
@@ -36,6 +35,14 @@ async function run() {
     app.get("/inventory", async (req, res) => {
       const cursor = inventoryCollection.find({});
       const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    // get item for under specific person only
+    app.get("/getItemByEmail", async (req, res) => {
+      console.log(req.query.email);
+      const data = inventoryCollection.find({ email: req.query.email });
+      const result = await data.toArray();
       res.send(result);
     });
 
