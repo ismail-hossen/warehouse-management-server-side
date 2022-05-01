@@ -24,6 +24,14 @@ async function run() {
       .db("impelColect")
       .collection("inventory");
 
+    // add new item
+    app.post("/add-inventory", async (req, res) => {
+      const body = req.body;
+      console.log(body);
+      const result = await inventoryCollection.insertOne(body);
+      res.send(result);
+    });
+
     // get all inventory
     app.get("/inventory", async (req, res) => {
       const cursor = inventoryCollection.find({});
