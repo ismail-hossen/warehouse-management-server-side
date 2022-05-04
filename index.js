@@ -40,11 +40,24 @@ async function run() {
     });
 
     // get item for under specific person by query
-    app.get("/getItemByEmail", async (req, res) => {
-      console.log(req.query.email);
-      const data = inventoryCollection.find({ email: req.query.email });
-      const result = await data.toArray();
-      res.send(result);
+    app.get("/getItemByEmail", (req, res) => {
+      const getAuth = req.headers.authorization;
+      if (!getAuth) {
+        return res.status(401).send({ message: "unauthorized access" });
+      }
+      jwt.verify(getAuth, process.env.JWT_TOKEN, async (err, decoded) => {
+        if (err) {
+          return res.status(403).send({ message: "Forbidden access" });
+        }
+
+        if (decoded === req.query.email) {
+          const findingData = inventoryCollection.find({
+            email: req.query.email,
+          });
+          const result = await findingData.toArray();
+          res.send(result);
+        }
+      });
     });
 
     // get one item by id
