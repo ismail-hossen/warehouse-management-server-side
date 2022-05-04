@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const jwt = require("jsonwebtoken");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const cors = require("cors");
 require("dotenv").config();
@@ -38,7 +39,7 @@ async function run() {
       res.send(result);
     });
 
-    // get item for under specific person only
+    // get item for under specific person by query
     app.get("/getItemByEmail", async (req, res) => {
       console.log(req.query.email);
       const data = inventoryCollection.find({ email: req.query.email });
@@ -86,6 +87,13 @@ async function run() {
       const query = { _id: ObjectId(id) };
       const result = await inventoryCollection.deleteOne(query);
       res.send(result);
+    });
+
+    // generate web jwt token sign
+    app.post("/generate", async (req, res) => {
+      const user = req.body.email;
+      const token = jwt.sign(user, process.env.JWT_TOKEN);
+      res.send({ token });
     });
 
     console.log("connected to db");
