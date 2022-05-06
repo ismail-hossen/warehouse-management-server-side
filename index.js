@@ -73,10 +73,10 @@ async function run() {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const findData = await inventoryCollection.findOne(query);
-      const found = findData.quantity - 1;
-
+      const quantity = findData.quantity - 1;
+      const sold = findData.sold + 1;
       const result = await inventoryCollection.updateOne(query, {
-        $set: { quantity: found },
+        $set: { quantity: quantity, sold: sold },
       });
       res.send(result);
     });
