@@ -109,26 +109,28 @@ async function run() {
       res.send({ token });
     });
 
-
     // get all data for pagination with query parameters
-    app.get('/queryData', async(req, res) =>{
-      const page = parseInt(req.query.page);
+    app.get("/queryData", async (req, res) => {
+      const page = req.query.page;
+      const skip = 10;
       const cursor = inventoryCollection.find({});
       let inventory;
-      if(page){
-        inventory = await cursor.skip(page*5).limit(5).toArray();
-      }
-      else{
+      if (page) {
+        inventory = await cursor
+          .skip(page * skip)
+          .limit(skip)
+          .toArray();
+      } else {
         inventory = await cursor.toArray();
       }
       res.send(inventory);
-  });
+    });
 
-  // get total inventory count 
-  app.get('/totalInventoryCount', async(req, res) =>{
-    const count = await inventoryCollection.estimatedDocumentCount();
-    res.send({count});
-});
+    // get total inventory count
+    app.get("/totalInventoryCount", async (req, res) => {
+      const count = await inventoryCollection.estimatedDocumentCount();
+      res.send({ count });
+    });
 
     console.log("connected to db");
   } finally {
