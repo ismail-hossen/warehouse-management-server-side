@@ -124,6 +124,12 @@ async function run() {
       res.send(inventory);
   });
 
+  // get total inventory count 
+  app.get('/totalInventoryCount', async(req, res) =>{
+    const count = await inventoryCollection.estimatedDocumentCount();
+    res.send({count});
+});
+
     console.log("connected to db");
   } finally {
   }
