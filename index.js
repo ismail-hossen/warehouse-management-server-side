@@ -109,6 +109,21 @@ async function run() {
       res.send({ token });
     });
 
+
+    // get all data for pagination with query parameters
+    app.get('/queryData', async(req, res) =>{
+      const page = parseInt(req.query.page);
+      const cursor = inventoryCollection.find({});
+      let inventory;
+      if(page){
+        inventory = await cursor.skip(page*5).limit(5).toArray();
+      }
+      else{
+        inventory = await cursor.toArray();
+      }
+      res.send(inventory);
+  });
+
     console.log("connected to db");
   } finally {
   }
